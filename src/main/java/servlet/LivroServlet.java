@@ -21,13 +21,15 @@ public class LivroServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String nome = request.getParameter("nome");
+        Integer id = livrosCadastrados.size() + 1;  
+        String titulo = request.getParameter("titulo");
         String autor = request.getParameter("autor");
         String editora = request.getParameter("editora");
-        String data = request.getParameter("data");
-        String genero = request.getParameter("genero");
+        Integer anoPublicacao = Integer.parseInt(request.getParameter("anoPublicacao"));
+        String isbn = request.getParameter("isbn");
+        String descricao = request.getParameter("descricao");
 
-        Livro livro = new Livro(nome, autor, editora, data, genero);
+        Livro livro = new Livro(id, titulo, autor, editora, anoPublicacao, isbn, descricao);
 
         livrosCadastrados.add(livro);
 
@@ -36,14 +38,17 @@ public class LivroServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String nomeLivro = request.getParameter("nome");
-        for (Livro livro : livrosCadastrados) {
-            if (livro.getNome().equals(nomeLivro)) {
-                livro.setDisponibilidade(false);
-                break;
+        String idLivro = request.getParameter("id");
+        if (idLivro != null) {
+            Integer id = Integer.parseInt(idLivro);
+            for (Livro livro : livrosCadastrados) {
+                if (livro.getId().equals(id)) {
+                    livro.setDisponibilidade(false);
+                    break;
+                }
             }
         }
-
+        
         request.setAttribute("livros", livrosCadastrados);
         request.getRequestDispatcher("livros.jsp").forward(request, response);
     }
